@@ -12,16 +12,12 @@ mem = {'p':0}    # Tabla de simbolos
 class Lexer(sly.Lexer):
 
     tokens = {
-        NUMBER, VAR,
+        NUMBER, VAR, NEWLINE,
     }
     literals = '+-*/()='
 
     # patrones para ignorar
     ignore = ' \t'
-
-    @_(r'\n+')
-    def ignore_newline(self, t):
-        self.lineno += t.value.count('\n')
 
     # Definición de Tokens
     VAR = r'[a-z]'
@@ -35,6 +31,11 @@ class Lexer(sly.Lexer):
     def error(self, t):
         print("%s Caracter es ilegal '%s'" % (t.lineno, t.value[0]))
         self.index += 1
+
+    @_(r'\\n|\;')
+    def NEWLINE(self, t):
+        self.lineno += 1
+        return t
 
 # =====================================================================
 # Analizador Sintático
@@ -60,7 +61,16 @@ class Parser(sly.Parser):
     def list(self, p):
         return p.expr
 
+    @_("list expr NEWLINE")
+    def list(self, p):
+        return p.expr
+
     @_("list error")
+    def list(self, p):
+        print(f"error de sintaxis en token '{p.type}'")
+        self.errok()
+
+    @_("list error NEWLINE")
     def list(self, p):
         print(f"error de sintaxis en token '{p.type}'")
         self.errok()
