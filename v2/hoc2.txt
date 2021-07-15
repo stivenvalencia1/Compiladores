@@ -8,33 +8,35 @@ Rule 4     list -> list expr
 Rule 5     list -> empty
 Rule 6     expr -> - expr  [precedence=left, level=4]
 Rule 7     expr -> ( expr )
-Rule 8     expr -> expr / expr  [precedence=left, level=3]
-Rule 9     expr -> expr * expr  [precedence=left, level=3]
-Rule 10    expr -> expr - expr  [precedence=left, level=2]
-Rule 11    expr -> expr + expr  [precedence=left, level=2]
-Rule 12    expr -> VAR = expr  [precedence=right, level=1]
-Rule 13    expr -> VAR
-Rule 14    expr -> NUMBER
-Rule 15    empty -> <empty>
+Rule 8     expr -> expr % expr  [precedence=left, level=3]
+Rule 9     expr -> expr / expr  [precedence=left, level=3]
+Rule 10    expr -> expr * expr  [precedence=left, level=3]
+Rule 11    expr -> expr - expr  [precedence=left, level=2]
+Rule 12    expr -> expr + expr  [precedence=left, level=2]
+Rule 13    expr -> VAR = expr  [precedence=right, level=1]
+Rule 14    expr -> VAR
+Rule 15    expr -> NUMBER
+Rule 16    empty -> <empty>
 
 Terminals, with rules where they appear:
 
+%                    : 8
 (                    : 7
 )                    : 7
-*                    : 9
-+                    : 11
--                    : 6 10
-/                    : 8
-=                    : 12
+*                    : 10
++                    : 12
+-                    : 6 11
+/                    : 9
+=                    : 13
 NEWLINE              : 1 3
-NUMBER               : 14
-VAR                  : 12 13
+NUMBER               : 15
+VAR                  : 13 14
 error                : 1 2
 
 Nonterminals, with rules where they appear:
 
 empty                : 5
-expr                 : 3 4 6 7 8 8 9 9 10 10 11 11 12
+expr                 : 3 4 6 7 8 8 9 9 10 10 11 11 12 12 13
 list                 : 1 2 3 4 0
 
 
@@ -46,13 +48,13 @@ state 0
     (3) list -> . list expr NEWLINE
     (4) list -> . list expr
     (5) list -> . empty
-    (15) empty -> .
-    error           reduce using rule 15 (empty -> .)
-    -               reduce using rule 15 (empty -> .)
-    (               reduce using rule 15 (empty -> .)
-    VAR             reduce using rule 15 (empty -> .)
-    NUMBER          reduce using rule 15 (empty -> .)
-    $end            reduce using rule 15 (empty -> .)
+    (16) empty -> .
+    error           reduce using rule 16 (empty -> .)
+    -               reduce using rule 16 (empty -> .)
+    (               reduce using rule 16 (empty -> .)
+    VAR             reduce using rule 16 (empty -> .)
+    NUMBER          reduce using rule 16 (empty -> .)
+    $end            reduce using rule 16 (empty -> .)
 
     list                           shift and go to state 1
     empty                          shift and go to state 2
@@ -66,13 +68,14 @@ state 1
     (4) list -> list . expr
     (6) expr -> . - expr
     (7) expr -> . ( expr )
-    (8) expr -> . expr / expr
-    (9) expr -> . expr * expr
-    (10) expr -> . expr - expr
-    (11) expr -> . expr + expr
-    (12) expr -> . VAR = expr
-    (13) expr -> . VAR
-    (14) expr -> . NUMBER
+    (8) expr -> . expr % expr
+    (9) expr -> . expr / expr
+    (10) expr -> . expr * expr
+    (11) expr -> . expr - expr
+    (12) expr -> . expr + expr
+    (13) expr -> . VAR = expr
+    (14) expr -> . VAR
+    (15) expr -> . NUMBER
     error           shift and go to state 3
     -               shift and go to state 5
     (               shift and go to state 6
@@ -109,10 +112,11 @@ state 4
 
     (3) list -> list expr . NEWLINE
     (4) list -> list expr .
-    (8) expr -> expr . / expr
-    (9) expr -> expr . * expr
-    (10) expr -> expr . - expr
-    (11) expr -> expr . + expr
+    (8) expr -> expr . % expr
+    (9) expr -> expr . / expr
+    (10) expr -> expr . * expr
+    (11) expr -> expr . - expr
+    (12) expr -> expr . + expr
   ! shift/reduce conflict for - resolved as shift
     NEWLINE         shift and go to state 10
     error           reduce using rule 4 (list -> list expr .)
@@ -120,10 +124,11 @@ state 4
     VAR             reduce using rule 4 (list -> list expr .)
     NUMBER          reduce using rule 4 (list -> list expr .)
     $end            reduce using rule 4 (list -> list expr .)
-    /               shift and go to state 11
-    *               shift and go to state 12
-    -               shift and go to state 13
-    +               shift and go to state 14
+    %               shift and go to state 11
+    /               shift and go to state 12
+    *               shift and go to state 13
+    -               shift and go to state 14
+    +               shift and go to state 15
 
 
 state 5
@@ -131,32 +136,14 @@ state 5
     (6) expr -> - . expr
     (6) expr -> . - expr
     (7) expr -> . ( expr )
-    (8) expr -> . expr / expr
-    (9) expr -> . expr * expr
-    (10) expr -> . expr - expr
-    (11) expr -> . expr + expr
-    (12) expr -> . VAR = expr
-    (13) expr -> . VAR
-    (14) expr -> . NUMBER
-    -               shift and go to state 5
-    (               shift and go to state 6
-    VAR             shift and go to state 7
-    NUMBER          shift and go to state 8
-
-    expr                           shift and go to state 15
-
-state 6
-
-    (7) expr -> ( . expr )
-    (6) expr -> . - expr
-    (7) expr -> . ( expr )
-    (8) expr -> . expr / expr
-    (9) expr -> . expr * expr
-    (10) expr -> . expr - expr
-    (11) expr -> . expr + expr
-    (12) expr -> . VAR = expr
-    (13) expr -> . VAR
-    (14) expr -> . NUMBER
+    (8) expr -> . expr % expr
+    (9) expr -> . expr / expr
+    (10) expr -> . expr * expr
+    (11) expr -> . expr - expr
+    (12) expr -> . expr + expr
+    (13) expr -> . VAR = expr
+    (14) expr -> . VAR
+    (15) expr -> . NUMBER
     -               shift and go to state 5
     (               shift and go to state 6
     VAR             shift and go to state 7
@@ -164,38 +151,60 @@ state 6
 
     expr                           shift and go to state 16
 
+state 6
+
+    (7) expr -> ( . expr )
+    (6) expr -> . - expr
+    (7) expr -> . ( expr )
+    (8) expr -> . expr % expr
+    (9) expr -> . expr / expr
+    (10) expr -> . expr * expr
+    (11) expr -> . expr - expr
+    (12) expr -> . expr + expr
+    (13) expr -> . VAR = expr
+    (14) expr -> . VAR
+    (15) expr -> . NUMBER
+    -               shift and go to state 5
+    (               shift and go to state 6
+    VAR             shift and go to state 7
+    NUMBER          shift and go to state 8
+
+    expr                           shift and go to state 17
+
 state 7
 
-    (12) expr -> VAR . = expr
-    (13) expr -> VAR .
-    =               shift and go to state 17
-    NEWLINE         reduce using rule 13 (expr -> VAR .)
-    /               reduce using rule 13 (expr -> VAR .)
-    *               reduce using rule 13 (expr -> VAR .)
-    -               reduce using rule 13 (expr -> VAR .)
-    +               reduce using rule 13 (expr -> VAR .)
-    error           reduce using rule 13 (expr -> VAR .)
-    (               reduce using rule 13 (expr -> VAR .)
-    VAR             reduce using rule 13 (expr -> VAR .)
-    NUMBER          reduce using rule 13 (expr -> VAR .)
-    $end            reduce using rule 13 (expr -> VAR .)
-    )               reduce using rule 13 (expr -> VAR .)
+    (13) expr -> VAR . = expr
+    (14) expr -> VAR .
+    =               shift and go to state 18
+    NEWLINE         reduce using rule 14 (expr -> VAR .)
+    %               reduce using rule 14 (expr -> VAR .)
+    /               reduce using rule 14 (expr -> VAR .)
+    *               reduce using rule 14 (expr -> VAR .)
+    -               reduce using rule 14 (expr -> VAR .)
+    +               reduce using rule 14 (expr -> VAR .)
+    error           reduce using rule 14 (expr -> VAR .)
+    (               reduce using rule 14 (expr -> VAR .)
+    VAR             reduce using rule 14 (expr -> VAR .)
+    NUMBER          reduce using rule 14 (expr -> VAR .)
+    $end            reduce using rule 14 (expr -> VAR .)
+    )               reduce using rule 14 (expr -> VAR .)
 
 
 state 8
 
-    (14) expr -> NUMBER .
-    NEWLINE         reduce using rule 14 (expr -> NUMBER .)
-    /               reduce using rule 14 (expr -> NUMBER .)
-    *               reduce using rule 14 (expr -> NUMBER .)
-    -               reduce using rule 14 (expr -> NUMBER .)
-    +               reduce using rule 14 (expr -> NUMBER .)
-    error           reduce using rule 14 (expr -> NUMBER .)
-    (               reduce using rule 14 (expr -> NUMBER .)
-    VAR             reduce using rule 14 (expr -> NUMBER .)
-    NUMBER          reduce using rule 14 (expr -> NUMBER .)
-    $end            reduce using rule 14 (expr -> NUMBER .)
-    )               reduce using rule 14 (expr -> NUMBER .)
+    (15) expr -> NUMBER .
+    NEWLINE         reduce using rule 15 (expr -> NUMBER .)
+    %               reduce using rule 15 (expr -> NUMBER .)
+    /               reduce using rule 15 (expr -> NUMBER .)
+    *               reduce using rule 15 (expr -> NUMBER .)
+    -               reduce using rule 15 (expr -> NUMBER .)
+    +               reduce using rule 15 (expr -> NUMBER .)
+    error           reduce using rule 15 (expr -> NUMBER .)
+    (               reduce using rule 15 (expr -> NUMBER .)
+    VAR             reduce using rule 15 (expr -> NUMBER .)
+    NUMBER          reduce using rule 15 (expr -> NUMBER .)
+    $end            reduce using rule 15 (expr -> NUMBER .)
+    )               reduce using rule 15 (expr -> NUMBER .)
 
 
 state 9
@@ -222,35 +231,17 @@ state 10
 
 state 11
 
-    (8) expr -> expr / . expr
+    (8) expr -> expr % . expr
     (6) expr -> . - expr
     (7) expr -> . ( expr )
-    (8) expr -> . expr / expr
-    (9) expr -> . expr * expr
-    (10) expr -> . expr - expr
-    (11) expr -> . expr + expr
-    (12) expr -> . VAR = expr
-    (13) expr -> . VAR
-    (14) expr -> . NUMBER
-    -               shift and go to state 5
-    (               shift and go to state 6
-    VAR             shift and go to state 7
-    NUMBER          shift and go to state 8
-
-    expr                           shift and go to state 18
-
-state 12
-
-    (9) expr -> expr * . expr
-    (6) expr -> . - expr
-    (7) expr -> . ( expr )
-    (8) expr -> . expr / expr
-    (9) expr -> . expr * expr
-    (10) expr -> . expr - expr
-    (11) expr -> . expr + expr
-    (12) expr -> . VAR = expr
-    (13) expr -> . VAR
-    (14) expr -> . NUMBER
+    (8) expr -> . expr % expr
+    (9) expr -> . expr / expr
+    (10) expr -> . expr * expr
+    (11) expr -> . expr - expr
+    (12) expr -> . expr + expr
+    (13) expr -> . VAR = expr
+    (14) expr -> . VAR
+    (15) expr -> . NUMBER
     -               shift and go to state 5
     (               shift and go to state 6
     VAR             shift and go to state 7
@@ -258,18 +249,19 @@ state 12
 
     expr                           shift and go to state 19
 
-state 13
+state 12
 
-    (10) expr -> expr - . expr
+    (9) expr -> expr / . expr
     (6) expr -> . - expr
     (7) expr -> . ( expr )
-    (8) expr -> . expr / expr
-    (9) expr -> . expr * expr
-    (10) expr -> . expr - expr
-    (11) expr -> . expr + expr
-    (12) expr -> . VAR = expr
-    (13) expr -> . VAR
-    (14) expr -> . NUMBER
+    (8) expr -> . expr % expr
+    (9) expr -> . expr / expr
+    (10) expr -> . expr * expr
+    (11) expr -> . expr - expr
+    (12) expr -> . expr + expr
+    (13) expr -> . VAR = expr
+    (14) expr -> . VAR
+    (15) expr -> . NUMBER
     -               shift and go to state 5
     (               shift and go to state 6
     VAR             shift and go to state 7
@@ -277,18 +269,19 @@ state 13
 
     expr                           shift and go to state 20
 
-state 14
+state 13
 
-    (11) expr -> expr + . expr
+    (10) expr -> expr * . expr
     (6) expr -> . - expr
     (7) expr -> . ( expr )
-    (8) expr -> . expr / expr
-    (9) expr -> . expr * expr
-    (10) expr -> . expr - expr
-    (11) expr -> . expr + expr
-    (12) expr -> . VAR = expr
-    (13) expr -> . VAR
-    (14) expr -> . NUMBER
+    (8) expr -> . expr % expr
+    (9) expr -> . expr / expr
+    (10) expr -> . expr * expr
+    (11) expr -> . expr - expr
+    (12) expr -> . expr + expr
+    (13) expr -> . VAR = expr
+    (14) expr -> . VAR
+    (15) expr -> . NUMBER
     -               shift and go to state 5
     (               shift and go to state 6
     VAR             shift and go to state 7
@@ -296,14 +289,56 @@ state 14
 
     expr                           shift and go to state 21
 
+state 14
+
+    (11) expr -> expr - . expr
+    (6) expr -> . - expr
+    (7) expr -> . ( expr )
+    (8) expr -> . expr % expr
+    (9) expr -> . expr / expr
+    (10) expr -> . expr * expr
+    (11) expr -> . expr - expr
+    (12) expr -> . expr + expr
+    (13) expr -> . VAR = expr
+    (14) expr -> . VAR
+    (15) expr -> . NUMBER
+    -               shift and go to state 5
+    (               shift and go to state 6
+    VAR             shift and go to state 7
+    NUMBER          shift and go to state 8
+
+    expr                           shift and go to state 22
+
 state 15
 
+    (12) expr -> expr + . expr
+    (6) expr -> . - expr
+    (7) expr -> . ( expr )
+    (8) expr -> . expr % expr
+    (9) expr -> . expr / expr
+    (10) expr -> . expr * expr
+    (11) expr -> . expr - expr
+    (12) expr -> . expr + expr
+    (13) expr -> . VAR = expr
+    (14) expr -> . VAR
+    (15) expr -> . NUMBER
+    -               shift and go to state 5
+    (               shift and go to state 6
+    VAR             shift and go to state 7
+    NUMBER          shift and go to state 8
+
+    expr                           shift and go to state 23
+
+state 16
+
     (6) expr -> - expr .
-    (8) expr -> expr . / expr
-    (9) expr -> expr . * expr
-    (10) expr -> expr . - expr
-    (11) expr -> expr . + expr
+    (8) expr -> expr . % expr
+    (9) expr -> expr . / expr
+    (10) expr -> expr . * expr
+    (11) expr -> expr . - expr
+    (12) expr -> expr . + expr
     NEWLINE         reduce using rule 6 (expr -> - expr .)
+    %               reduce using rule 6 (expr -> - expr .)
     /               reduce using rule 6 (expr -> - expr .)
     *               reduce using rule 6 (expr -> - expr .)
     -               reduce using rule 6 (expr -> - expr .)
@@ -316,123 +351,157 @@ state 15
     )               reduce using rule 6 (expr -> - expr .)
 
 
-state 16
-
-    (7) expr -> ( expr . )
-    (8) expr -> expr . / expr
-    (9) expr -> expr . * expr
-    (10) expr -> expr . - expr
-    (11) expr -> expr . + expr
-    )               shift and go to state 22
-    /               shift and go to state 11
-    *               shift and go to state 12
-    -               shift and go to state 13
-    +               shift and go to state 14
-
-
 state 17
 
-    (12) expr -> VAR = . expr
+    (7) expr -> ( expr . )
+    (8) expr -> expr . % expr
+    (9) expr -> expr . / expr
+    (10) expr -> expr . * expr
+    (11) expr -> expr . - expr
+    (12) expr -> expr . + expr
+    )               shift and go to state 24
+    %               shift and go to state 11
+    /               shift and go to state 12
+    *               shift and go to state 13
+    -               shift and go to state 14
+    +               shift and go to state 15
+
+
+state 18
+
+    (13) expr -> VAR = . expr
     (6) expr -> . - expr
     (7) expr -> . ( expr )
-    (8) expr -> . expr / expr
-    (9) expr -> . expr * expr
-    (10) expr -> . expr - expr
-    (11) expr -> . expr + expr
-    (12) expr -> . VAR = expr
-    (13) expr -> . VAR
-    (14) expr -> . NUMBER
+    (8) expr -> . expr % expr
+    (9) expr -> . expr / expr
+    (10) expr -> . expr * expr
+    (11) expr -> . expr - expr
+    (12) expr -> . expr + expr
+    (13) expr -> . VAR = expr
+    (14) expr -> . VAR
+    (15) expr -> . NUMBER
     -               shift and go to state 5
     (               shift and go to state 6
     VAR             shift and go to state 7
     NUMBER          shift and go to state 8
 
-    expr                           shift and go to state 23
-
-state 18
-
-    (8) expr -> expr / expr .
-    (8) expr -> expr . / expr
-    (9) expr -> expr . * expr
-    (10) expr -> expr . - expr
-    (11) expr -> expr . + expr
-    NEWLINE         reduce using rule 8 (expr -> expr / expr .)
-    /               reduce using rule 8 (expr -> expr / expr .)
-    *               reduce using rule 8 (expr -> expr / expr .)
-    -               reduce using rule 8 (expr -> expr / expr .)
-    +               reduce using rule 8 (expr -> expr / expr .)
-    error           reduce using rule 8 (expr -> expr / expr .)
-    (               reduce using rule 8 (expr -> expr / expr .)
-    VAR             reduce using rule 8 (expr -> expr / expr .)
-    NUMBER          reduce using rule 8 (expr -> expr / expr .)
-    $end            reduce using rule 8 (expr -> expr / expr .)
-    )               reduce using rule 8 (expr -> expr / expr .)
-
+    expr                           shift and go to state 25
 
 state 19
 
-    (9) expr -> expr * expr .
-    (8) expr -> expr . / expr
-    (9) expr -> expr . * expr
-    (10) expr -> expr . - expr
-    (11) expr -> expr . + expr
-    NEWLINE         reduce using rule 9 (expr -> expr * expr .)
-    /               reduce using rule 9 (expr -> expr * expr .)
-    *               reduce using rule 9 (expr -> expr * expr .)
-    -               reduce using rule 9 (expr -> expr * expr .)
-    +               reduce using rule 9 (expr -> expr * expr .)
-    error           reduce using rule 9 (expr -> expr * expr .)
-    (               reduce using rule 9 (expr -> expr * expr .)
-    VAR             reduce using rule 9 (expr -> expr * expr .)
-    NUMBER          reduce using rule 9 (expr -> expr * expr .)
-    $end            reduce using rule 9 (expr -> expr * expr .)
-    )               reduce using rule 9 (expr -> expr * expr .)
+    (8) expr -> expr % expr .
+    (8) expr -> expr . % expr
+    (9) expr -> expr . / expr
+    (10) expr -> expr . * expr
+    (11) expr -> expr . - expr
+    (12) expr -> expr . + expr
+    NEWLINE         reduce using rule 8 (expr -> expr % expr .)
+    %               reduce using rule 8 (expr -> expr % expr .)
+    /               reduce using rule 8 (expr -> expr % expr .)
+    *               reduce using rule 8 (expr -> expr % expr .)
+    -               reduce using rule 8 (expr -> expr % expr .)
+    +               reduce using rule 8 (expr -> expr % expr .)
+    error           reduce using rule 8 (expr -> expr % expr .)
+    (               reduce using rule 8 (expr -> expr % expr .)
+    VAR             reduce using rule 8 (expr -> expr % expr .)
+    NUMBER          reduce using rule 8 (expr -> expr % expr .)
+    $end            reduce using rule 8 (expr -> expr % expr .)
+    )               reduce using rule 8 (expr -> expr % expr .)
 
 
 state 20
 
-    (10) expr -> expr - expr .
-    (8) expr -> expr . / expr
-    (9) expr -> expr . * expr
-    (10) expr -> expr . - expr
-    (11) expr -> expr . + expr
-    NEWLINE         reduce using rule 10 (expr -> expr - expr .)
-    -               reduce using rule 10 (expr -> expr - expr .)
-    +               reduce using rule 10 (expr -> expr - expr .)
-    error           reduce using rule 10 (expr -> expr - expr .)
-    (               reduce using rule 10 (expr -> expr - expr .)
-    VAR             reduce using rule 10 (expr -> expr - expr .)
-    NUMBER          reduce using rule 10 (expr -> expr - expr .)
-    $end            reduce using rule 10 (expr -> expr - expr .)
-    )               reduce using rule 10 (expr -> expr - expr .)
-    /               shift and go to state 11
-    *               shift and go to state 12
+    (9) expr -> expr / expr .
+    (8) expr -> expr . % expr
+    (9) expr -> expr . / expr
+    (10) expr -> expr . * expr
+    (11) expr -> expr . - expr
+    (12) expr -> expr . + expr
+    NEWLINE         reduce using rule 9 (expr -> expr / expr .)
+    %               reduce using rule 9 (expr -> expr / expr .)
+    /               reduce using rule 9 (expr -> expr / expr .)
+    *               reduce using rule 9 (expr -> expr / expr .)
+    -               reduce using rule 9 (expr -> expr / expr .)
+    +               reduce using rule 9 (expr -> expr / expr .)
+    error           reduce using rule 9 (expr -> expr / expr .)
+    (               reduce using rule 9 (expr -> expr / expr .)
+    VAR             reduce using rule 9 (expr -> expr / expr .)
+    NUMBER          reduce using rule 9 (expr -> expr / expr .)
+    $end            reduce using rule 9 (expr -> expr / expr .)
+    )               reduce using rule 9 (expr -> expr / expr .)
 
 
 state 21
 
-    (11) expr -> expr + expr .
-    (8) expr -> expr . / expr
-    (9) expr -> expr . * expr
-    (10) expr -> expr . - expr
-    (11) expr -> expr . + expr
-    NEWLINE         reduce using rule 11 (expr -> expr + expr .)
-    -               reduce using rule 11 (expr -> expr + expr .)
-    +               reduce using rule 11 (expr -> expr + expr .)
-    error           reduce using rule 11 (expr -> expr + expr .)
-    (               reduce using rule 11 (expr -> expr + expr .)
-    VAR             reduce using rule 11 (expr -> expr + expr .)
-    NUMBER          reduce using rule 11 (expr -> expr + expr .)
-    $end            reduce using rule 11 (expr -> expr + expr .)
-    )               reduce using rule 11 (expr -> expr + expr .)
-    /               shift and go to state 11
-    *               shift and go to state 12
+    (10) expr -> expr * expr .
+    (8) expr -> expr . % expr
+    (9) expr -> expr . / expr
+    (10) expr -> expr . * expr
+    (11) expr -> expr . - expr
+    (12) expr -> expr . + expr
+    NEWLINE         reduce using rule 10 (expr -> expr * expr .)
+    %               reduce using rule 10 (expr -> expr * expr .)
+    /               reduce using rule 10 (expr -> expr * expr .)
+    *               reduce using rule 10 (expr -> expr * expr .)
+    -               reduce using rule 10 (expr -> expr * expr .)
+    +               reduce using rule 10 (expr -> expr * expr .)
+    error           reduce using rule 10 (expr -> expr * expr .)
+    (               reduce using rule 10 (expr -> expr * expr .)
+    VAR             reduce using rule 10 (expr -> expr * expr .)
+    NUMBER          reduce using rule 10 (expr -> expr * expr .)
+    $end            reduce using rule 10 (expr -> expr * expr .)
+    )               reduce using rule 10 (expr -> expr * expr .)
 
 
 state 22
 
+    (11) expr -> expr - expr .
+    (8) expr -> expr . % expr
+    (9) expr -> expr . / expr
+    (10) expr -> expr . * expr
+    (11) expr -> expr . - expr
+    (12) expr -> expr . + expr
+    NEWLINE         reduce using rule 11 (expr -> expr - expr .)
+    -               reduce using rule 11 (expr -> expr - expr .)
+    +               reduce using rule 11 (expr -> expr - expr .)
+    error           reduce using rule 11 (expr -> expr - expr .)
+    (               reduce using rule 11 (expr -> expr - expr .)
+    VAR             reduce using rule 11 (expr -> expr - expr .)
+    NUMBER          reduce using rule 11 (expr -> expr - expr .)
+    $end            reduce using rule 11 (expr -> expr - expr .)
+    )               reduce using rule 11 (expr -> expr - expr .)
+    %               shift and go to state 11
+    /               shift and go to state 12
+    *               shift and go to state 13
+
+
+state 23
+
+    (12) expr -> expr + expr .
+    (8) expr -> expr . % expr
+    (9) expr -> expr . / expr
+    (10) expr -> expr . * expr
+    (11) expr -> expr . - expr
+    (12) expr -> expr . + expr
+    NEWLINE         reduce using rule 12 (expr -> expr + expr .)
+    -               reduce using rule 12 (expr -> expr + expr .)
+    +               reduce using rule 12 (expr -> expr + expr .)
+    error           reduce using rule 12 (expr -> expr + expr .)
+    (               reduce using rule 12 (expr -> expr + expr .)
+    VAR             reduce using rule 12 (expr -> expr + expr .)
+    NUMBER          reduce using rule 12 (expr -> expr + expr .)
+    $end            reduce using rule 12 (expr -> expr + expr .)
+    )               reduce using rule 12 (expr -> expr + expr .)
+    %               shift and go to state 11
+    /               shift and go to state 12
+    *               shift and go to state 13
+
+
+state 24
+
     (7) expr -> ( expr ) .
     NEWLINE         reduce using rule 7 (expr -> ( expr ) .)
+    %               reduce using rule 7 (expr -> ( expr ) .)
     /               reduce using rule 7 (expr -> ( expr ) .)
     *               reduce using rule 7 (expr -> ( expr ) .)
     -               reduce using rule 7 (expr -> ( expr ) .)
@@ -445,24 +514,26 @@ state 22
     )               reduce using rule 7 (expr -> ( expr ) .)
 
 
-state 23
+state 25
 
-    (12) expr -> VAR = expr .
-    (8) expr -> expr . / expr
-    (9) expr -> expr . * expr
-    (10) expr -> expr . - expr
-    (11) expr -> expr . + expr
-    NEWLINE         reduce using rule 12 (expr -> VAR = expr .)
-    error           reduce using rule 12 (expr -> VAR = expr .)
-    (               reduce using rule 12 (expr -> VAR = expr .)
-    VAR             reduce using rule 12 (expr -> VAR = expr .)
-    NUMBER          reduce using rule 12 (expr -> VAR = expr .)
-    $end            reduce using rule 12 (expr -> VAR = expr .)
-    )               reduce using rule 12 (expr -> VAR = expr .)
-    /               shift and go to state 11
-    *               shift and go to state 12
-    -               shift and go to state 13
-    +               shift and go to state 14
+    (13) expr -> VAR = expr .
+    (8) expr -> expr . % expr
+    (9) expr -> expr . / expr
+    (10) expr -> expr . * expr
+    (11) expr -> expr . - expr
+    (12) expr -> expr . + expr
+    NEWLINE         reduce using rule 13 (expr -> VAR = expr .)
+    error           reduce using rule 13 (expr -> VAR = expr .)
+    (               reduce using rule 13 (expr -> VAR = expr .)
+    VAR             reduce using rule 13 (expr -> VAR = expr .)
+    NUMBER          reduce using rule 13 (expr -> VAR = expr .)
+    $end            reduce using rule 13 (expr -> VAR = expr .)
+    )               reduce using rule 13 (expr -> VAR = expr .)
+    %               shift and go to state 11
+    /               shift and go to state 12
+    *               shift and go to state 13
+    -               shift and go to state 14
+    +               shift and go to state 15
 
 
 Conflicts:

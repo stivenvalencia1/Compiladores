@@ -14,7 +14,7 @@ class Lexer(sly.Lexer):
     tokens = {
         NUMBER, VAR, NEWLINE,
     }
-    literals = '+-*/()='
+    literals = '+-*/()=%'
 
     # patrones para ignorar
     ignore = ' \t'
@@ -48,7 +48,7 @@ class Parser(sly.Parser):
     precedence = (
         ('right', '='),
         ('left', '+', '-'),
-        ('left', '*', '/'),
+        ('left', '*', '/','%'),
         ('left', UMINUS),
     )
 
@@ -109,6 +109,14 @@ class Parser(sly.Parser):
         try:
             mem['p']=p.expr0 / p.expr1
             return p.expr0 / p.expr1
+        except ZeroDivisionError:
+            return float('inf')
+
+    @_("expr '%' expr")
+    def expr(self, p):
+        try:
+            mem['p']=p.expr0 % p.expr1
+            return p.expr0 % p.expr1
         except ZeroDivisionError:
             return float('inf')
 

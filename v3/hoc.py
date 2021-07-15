@@ -1,39 +1,33 @@
 '''
-Nivel 1: Una calculadora con 4 operaciones
-
-Gramática libre de contexto ()
-
-list : <empty>
-    | list expr
-    ;
-
-expr : NUMBER
-    | expr '+' expr
-    | expr '-' expr
-    | expr '*' expr
-    | expr '/' expr
-    | '(' expr ')'
-    ;
+Nivel 3: Variables longitud arbitraria y funciones
 '''
+from init import *
+from model import *
+from math import pow
 import sly
-
-
-mem = {'p':0}    # Tabla de simbolos
-
+#mem = {'p':0}    # Tabla de simbolos
 # =====================================================================
 # Analizador Lexico
 # =====================================================================
 class Lexer(sly.Lexer):
 
     tokens = {
-        NUMBER, VAR, NEWLINE,
+        NUMBER, VAR, NEWLINE, BLTIN,
     }
-    literals = '+-*/()=%'
+    literals = '+-*/()=%^'
+
     # patrones para ignorar
     ignore = ' \t'
 
     # Definición de Tokens
-    VAR = r'[a-z]'
+    @_(r'[a-zA-Z_][a-zA-z0-9_]*')
+    def VAR(self, t):
+        s = lookup(t.value)
+        if s is None:
+            s = install(t.value, 'UNDEF')
+        t.type = 'VAR' if s.type == 'UNDEF' else s.type
+        t.value = s
+        return t
 
     # Definir regex para NUMBER
     @_(r'\d*\.\d+|\d+\.?')
@@ -54,19 +48,28 @@ class Lexer(sly.Lexer):
 # Analizador Sintático
 # =====================================================================
 class Parser(sly.Parser):
-    debugfile = 'hoc1.txt'
+    debugfile = 'hoc3.txt'
 
     tokens = Lexer.tokens
 
     precedence = (
         ('right', '='),
         ('left', '+', '-'),
-        ('left', '*', '/','%'),
+        ('left', '*', '/', '%'),
         ('left', UMINUS),
+        ('right', '^'),
     )
 
 	# Definición de la gramática
     @_("empty")
+    def list(self, p):
+        pass
+
+    @_("list asgn")
+    def list(self, p):
+        pass
+
+    @_("list asgn NEWLINE")
     def list(self, p):
         pass
 
@@ -88,42 +91,55 @@ class Parser(sly.Parser):
         print(f"error de sintaxis en token '{p.type}'")
         self.errok()
 
+    @_("VAR '=' expr")
+    def asgn(self, p):
+        p.VAR.val = p.expr
+        p.VAR.type = 'VAR'
+        return p
+
     @_("NUMBER")
     def expr(self, p):
         return p.NUMBER
 
     @_("VAR")
     def expr(self, p):
-        return mem[p.VAR]
+        if p.VAR.type == 'UNDEF':
+            print(f"Variable '{p.VAR.name}' no esta definida")
+        return p.VAR.val
 
-    @_("VAR '=' expr")
+    @_("BLTIN '(' expr ')'")
     def expr(self, p):
-        mem[p.VAR] = p.expr
-        mem['p']=p.expr
-        return p.expr
+        return p.BLTIN.ptr(p.expr)
 
     @_("expr '+' expr")
     def expr(self, p):
-        mem['p']=p.expr0 + p.expr1
         return p.expr0 + p.expr1
 
     @_("expr '-' expr")
     def expr(self, p):
-        mem['p']=p.expr0 - p.expr1
         return p.expr0 - p.expr1
 
     @_("expr '*' expr")
     def expr(self, p):
-        mem['p']=p.expr0 * p.expr1
         return p.expr0 * p.expr1
 
     @_("expr '/' expr")
     def expr(self, p):
         try:
-            mem['p']=p.expr0 / p.expr1
             return p.expr0 / p.expr1
         except ZeroDivisionError:
             return float('inf')
+
+    @_("expr '%' expr")
+    def expr(self, p):
+        try:
+            return p.expr0 % p.expr1
+        except ZeroDivisionError:
+            return float('inf')
+
+    @_("expr '^' expr")
+    def expr(self, p):
+        return pow(p.expr0, p.expr1)
 
     @_("'(' expr ')'")
     def expr(self, p):
@@ -131,7 +147,6 @@ class Parser(sly.Parser):
 
     @_("'-' expr %prec UMINUS")
     def expr(self, p):
-        mem['p']=-p.expr
         return -p.expr
 
     @_("")
@@ -145,6 +160,7 @@ class Parser(sly.Parser):
         else:
             print("Error de sintaxis en EOF")
 
+init()
 
 def main():
     l = Lexer()
@@ -154,7 +170,8 @@ def main():
         try:
             text = input('$ ')
             result = p.parse(l.tokenize(text))
-            print("\t%.8g" % result)
+            if isinstance(result,float):
+                print("\t%.8g" % result)
         except EOFError:
             break
 
