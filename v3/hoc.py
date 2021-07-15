@@ -93,8 +93,11 @@ class Parser(sly.Parser):
 
     @_("VAR '=' expr")
     def asgn(self, p):
-        p.VAR.val = p.expr
-        p.VAR.type = 'VAR'
+        if p.VAR.name in consts:
+            print(f"Imposible modificar '{p.VAR.name}'")
+        else:
+            p.VAR.val = p.expr
+            p.VAR.type = 'VAR'
         return p
 
     @_("NUMBER")

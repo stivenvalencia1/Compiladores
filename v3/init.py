@@ -14,6 +14,7 @@ builtins = {
     'sin':   math.sin,
     'cos':   math.cos,
     'atan':  math.atan,
+    'atan2': math.atan2,
     'log':   math.log,   # checks argument
     'log10': math.log10, # checks argument
     'exp':   math.exp,   # checks argument
