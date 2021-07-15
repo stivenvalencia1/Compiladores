@@ -45,7 +45,7 @@ class Lexer(sly.Lexer):
         print("%s Caracter es ilegal '%s'" % (t.lineno, t.value[0]))
         self.index += 1
 
-    @_(r'\\n|\;')
+    @_(r'\n|\\n|\;')
     def NEWLINE(self, t):
         self.lineno += 1
         return t
