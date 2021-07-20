@@ -4,6 +4,8 @@ Nivel 3: Variables longitud arbitraria y funciones
 from init import *
 from model import *
 from math import pow
+import random
+import os
 import sly
 #mem = {'p':0}    # Tabla de simbolos
 # =====================================================================
@@ -14,7 +16,7 @@ class Lexer(sly.Lexer):
     tokens = {
         NUMBER, VAR, NEWLINE, BLTIN,
     }
-    literals = '+-*/()=%^'
+    literals = '+-*/()=%^,'
 
     # patrones para ignorar
     ignore = ' \t'
@@ -39,7 +41,7 @@ class Lexer(sly.Lexer):
         print("%s Caracter es ilegal '%s'" % (t.lineno, t.value[0]))
         self.index += 1
 
-    @_(r'\\n|\;')
+    @_(r'\n|\\n|\;')
     def NEWLINE(self, t):
         self.lineno += 1
         return t
@@ -95,10 +97,16 @@ class Parser(sly.Parser):
     def asgn(self, p):
         if p.VAR.name in consts:
             print(f"Imposible modificar '{p.VAR.name}'")
+            self.errok()
         else:
             p.VAR.val = p.expr
             p.VAR.type = 'VAR'
         return p
+
+    @_("BLTIN '=' expr")
+    def asgn(self, p):
+        print(f"Imposible modificar '{p.BLTIN.name}'")
+        self.errok()
 
     @_("NUMBER")
     def expr(self, p):
@@ -110,9 +118,17 @@ class Parser(sly.Parser):
             print(f"Variable '{p.VAR.name}' no esta definida")
         return p.VAR.val
 
-    @_("BLTIN '(' expr ')'")
+    @_("BLTIN '(' list ')'")
     def expr(self, p):
-        return p.BLTIN.ptr(p.expr)
+        return p.BLTIN.ptr(p.list)
+
+    @_("BLTIN '(' list ',' list ')'")
+    def expr(self, p):
+        try:
+            return p.BLTIN.ptr(p.list0, p.list1)
+        except:
+            print(f"La funcion no puede realizar el calculo")
+            self.errok()
 
     @_("expr '+' expr")
     def expr(self, p):

@@ -1,0 +1,632 @@
+Grammar:
+
+Rule 0     S' -> list
+Rule 1     list -> list error
+Rule 2     list -> list expr
+Rule 3     list -> empty
+Rule 4     asgn -> VAR = expr  [precedence=right, level=1]
+Rule 5     expr -> - expr  [precedence=left, level=4]
+Rule 6     expr -> ( expr )
+Rule 7     expr -> expr ^ expr  [precedence=right, level=5]
+Rule 8     expr -> expr / expr  [precedence=left, level=3]
+Rule 9     expr -> expr * expr  [precedence=left, level=3]
+Rule 10    expr -> expr - expr  [precedence=left, level=2]
+Rule 11    expr -> expr + expr  [precedence=left, level=2]
+Rule 12    expr -> BLTIN ( expr )
+Rule 13    expr -> asgn
+Rule 14    expr -> VAR
+Rule 15    expr -> NUMBER
+Rule 16    empty -> <empty>
+
+Terminals, with rules where they appear:
+
+(                    : 6 12
+)                    : 6 12
+*                    : 9
++                    : 11
+-                    : 5 10
+/                    : 8
+=                    : 4
+BLTIN                : 12
+NUMBER               : 15
+VAR                  : 4 14
+^                    : 7
+error                : 1
+
+Nonterminals, with rules where they appear:
+
+asgn                 : 13
+empty                : 3
+expr                 : 2 4 5 6 7 7 8 8 9 9 10 10 11 11 12
+list                 : 1 2 0
+
+
+state 0
+
+    (0) S' -> . list
+    (1) list -> . list error
+    (2) list -> . list expr
+    (3) list -> . empty
+    (16) empty -> .
+    error           reduce using rule 16 (empty -> .)
+    -               reduce using rule 16 (empty -> .)
+    (               reduce using rule 16 (empty -> .)
+    BLTIN           reduce using rule 16 (empty -> .)
+    VAR             reduce using rule 16 (empty -> .)
+    NUMBER          reduce using rule 16 (empty -> .)
+    $end            reduce using rule 16 (empty -> .)
+
+    list                           shift and go to state 1
+    empty                          shift and go to state 2
+
+state 1
+
+    (0) S' -> list .
+    (1) list -> list . error
+    (2) list -> list . expr
+    (5) expr -> . - expr
+    (6) expr -> . ( expr )
+    (7) expr -> . expr ^ expr
+    (8) expr -> . expr / expr
+    (9) expr -> . expr * expr
+    (10) expr -> . expr - expr
+    (11) expr -> . expr + expr
+    (12) expr -> . BLTIN ( expr )
+    (13) expr -> . asgn
+    (14) expr -> . VAR
+    (15) expr -> . NUMBER
+    (4) asgn -> . VAR = expr
+    error           shift and go to state 3
+    -               shift and go to state 5
+    (               shift and go to state 6
+    BLTIN           shift and go to state 7
+    VAR             shift and go to state 9
+    NUMBER          shift and go to state 10
+
+    expr                           shift and go to state 4
+    asgn                           shift and go to state 8
+
+state 2
+
+    (3) list -> empty .
+    error           reduce using rule 3 (list -> empty .)
+    -               reduce using rule 3 (list -> empty .)
+    (               reduce using rule 3 (list -> empty .)
+    BLTIN           reduce using rule 3 (list -> empty .)
+    VAR             reduce using rule 3 (list -> empty .)
+    NUMBER          reduce using rule 3 (list -> empty .)
+    $end            reduce using rule 3 (list -> empty .)
+
+
+state 3
+
+    (1) list -> list error .
+    error           reduce using rule 1 (list -> list error .)
+    -               reduce using rule 1 (list -> list error .)
+    (               reduce using rule 1 (list -> list error .)
+    BLTIN           reduce using rule 1 (list -> list error .)
+    VAR             reduce using rule 1 (list -> list error .)
+    NUMBER          reduce using rule 1 (list -> list error .)
+    $end            reduce using rule 1 (list -> list error .)
+
+
+state 4
+
+    (2) list -> list expr .
+    (7) expr -> expr . ^ expr
+    (8) expr -> expr . / expr
+    (9) expr -> expr . * expr
+    (10) expr -> expr . - expr
+    (11) expr -> expr . + expr
+  ! shift/reduce conflict for - resolved as shift
+    error           reduce using rule 2 (list -> list expr .)
+    (               reduce using rule 2 (list -> list expr .)
+    BLTIN           reduce using rule 2 (list -> list expr .)
+    VAR             reduce using rule 2 (list -> list expr .)
+    NUMBER          reduce using rule 2 (list -> list expr .)
+    $end            reduce using rule 2 (list -> list expr .)
+    ^               shift and go to state 11
+    /               shift and go to state 12
+    *               shift and go to state 13
+    -               shift and go to state 14
+    +               shift and go to state 15
+
+
+state 5
+
+    (5) expr -> - . expr
+    (5) expr -> . - expr
+    (6) expr -> . ( expr )
+    (7) expr -> . expr ^ expr
+    (8) expr -> . expr / expr
+    (9) expr -> . expr * expr
+    (10) expr -> . expr - expr
+    (11) expr -> . expr + expr
+    (12) expr -> . BLTIN ( expr )
+    (13) expr -> . asgn
+    (14) expr -> . VAR
+    (15) expr -> . NUMBER
+    (4) asgn -> . VAR = expr
+    -               shift and go to state 5
+    (               shift and go to state 6
+    BLTIN           shift and go to state 7
+    VAR             shift and go to state 9
+    NUMBER          shift and go to state 10
+
+    expr                           shift and go to state 16
+    asgn                           shift and go to state 8
+
+state 6
+
+    (6) expr -> ( . expr )
+    (5) expr -> . - expr
+    (6) expr -> . ( expr )
+    (7) expr -> . expr ^ expr
+    (8) expr -> . expr / expr
+    (9) expr -> . expr * expr
+    (10) expr -> . expr - expr
+    (11) expr -> . expr + expr
+    (12) expr -> . BLTIN ( expr )
+    (13) expr -> . asgn
+    (14) expr -> . VAR
+    (15) expr -> . NUMBER
+    (4) asgn -> . VAR = expr
+    -               shift and go to state 5
+    (               shift and go to state 6
+    BLTIN           shift and go to state 7
+    VAR             shift and go to state 9
+    NUMBER          shift and go to state 10
+
+    expr                           shift and go to state 17
+    asgn                           shift and go to state 8
+
+state 7
+
+    (12) expr -> BLTIN . ( expr )
+    (               shift and go to state 18
+
+
+state 8
+
+    (13) expr -> asgn .
+    ^               reduce using rule 13 (expr -> asgn .)
+    /               reduce using rule 13 (expr -> asgn .)
+    *               reduce using rule 13 (expr -> asgn .)
+    -               reduce using rule 13 (expr -> asgn .)
+    +               reduce using rule 13 (expr -> asgn .)
+    error           reduce using rule 13 (expr -> asgn .)
+    (               reduce using rule 13 (expr -> asgn .)
+    BLTIN           reduce using rule 13 (expr -> asgn .)
+    VAR             reduce using rule 13 (expr -> asgn .)
+    NUMBER          reduce using rule 13 (expr -> asgn .)
+    $end            reduce using rule 13 (expr -> asgn .)
+    )               reduce using rule 13 (expr -> asgn .)
+
+
+state 9
+
+    (14) expr -> VAR .
+    (4) asgn -> VAR . = expr
+    ^               reduce using rule 14 (expr -> VAR .)
+    /               reduce using rule 14 (expr -> VAR .)
+    *               reduce using rule 14 (expr -> VAR .)
+    -               reduce using rule 14 (expr -> VAR .)
+    +               reduce using rule 14 (expr -> VAR .)
+    error           reduce using rule 14 (expr -> VAR .)
+    (               reduce using rule 14 (expr -> VAR .)
+    BLTIN           reduce using rule 14 (expr -> VAR .)
+    VAR             reduce using rule 14 (expr -> VAR .)
+    NUMBER          reduce using rule 14 (expr -> VAR .)
+    $end            reduce using rule 14 (expr -> VAR .)
+    )               reduce using rule 14 (expr -> VAR .)
+    =               shift and go to state 19
+
+
+state 10
+
+    (15) expr -> NUMBER .
+    ^               reduce using rule 15 (expr -> NUMBER .)
+    /               reduce using rule 15 (expr -> NUMBER .)
+    *               reduce using rule 15 (expr -> NUMBER .)
+    -               reduce using rule 15 (expr -> NUMBER .)
+    +               reduce using rule 15 (expr -> NUMBER .)
+    error           reduce using rule 15 (expr -> NUMBER .)
+    (               reduce using rule 15 (expr -> NUMBER .)
+    BLTIN           reduce using rule 15 (expr -> NUMBER .)
+    VAR             reduce using rule 15 (expr -> NUMBER .)
+    NUMBER          reduce using rule 15 (expr -> NUMBER .)
+    $end            reduce using rule 15 (expr -> NUMBER .)
+    )               reduce using rule 15 (expr -> NUMBER .)
+
+
+state 11
+
+    (7) expr -> expr ^ . expr
+    (5) expr -> . - expr
+    (6) expr -> . ( expr )
+    (7) expr -> . expr ^ expr
+    (8) expr -> . expr / expr
+    (9) expr -> . expr * expr
+    (10) expr -> . expr - expr
+    (11) expr -> . expr + expr
+    (12) expr -> . BLTIN ( expr )
+    (13) expr -> . asgn
+    (14) expr -> . VAR
+    (15) expr -> . NUMBER
+    (4) asgn -> . VAR = expr
+    -               shift and go to state 5
+    (               shift and go to state 6
+    BLTIN           shift and go to state 7
+    VAR             shift and go to state 9
+    NUMBER          shift and go to state 10
+
+    expr                           shift and go to state 20
+    asgn                           shift and go to state 8
+
+state 12
+
+    (8) expr -> expr / . expr
+    (5) expr -> . - expr
+    (6) expr -> . ( expr )
+    (7) expr -> . expr ^ expr
+    (8) expr -> . expr / expr
+    (9) expr -> . expr * expr
+    (10) expr -> . expr - expr
+    (11) expr -> . expr + expr
+    (12) expr -> . BLTIN ( expr )
+    (13) expr -> . asgn
+    (14) expr -> . VAR
+    (15) expr -> . NUMBER
+    (4) asgn -> . VAR = expr
+    -               shift and go to state 5
+    (               shift and go to state 6
+    BLTIN           shift and go to state 7
+    VAR             shift and go to state 9
+    NUMBER          shift and go to state 10
+
+    expr                           shift and go to state 21
+    asgn                           shift and go to state 8
+
+state 13
+
+    (9) expr -> expr * . expr
+    (5) expr -> . - expr
+    (6) expr -> . ( expr )
+    (7) expr -> . expr ^ expr
+    (8) expr -> . expr / expr
+    (9) expr -> . expr * expr
+    (10) expr -> . expr - expr
+    (11) expr -> . expr + expr
+    (12) expr -> . BLTIN ( expr )
+    (13) expr -> . asgn
+    (14) expr -> . VAR
+    (15) expr -> . NUMBER
+    (4) asgn -> . VAR = expr
+    -               shift and go to state 5
+    (               shift and go to state 6
+    BLTIN           shift and go to state 7
+    VAR             shift and go to state 9
+    NUMBER          shift and go to state 10
+
+    expr                           shift and go to state 22
+    asgn                           shift and go to state 8
+
+state 14
+
+    (10) expr -> expr - . expr
+    (5) expr -> . - expr
+    (6) expr -> . ( expr )
+    (7) expr -> . expr ^ expr
+    (8) expr -> . expr / expr
+    (9) expr -> . expr * expr
+    (10) expr -> . expr - expr
+    (11) expr -> . expr + expr
+    (12) expr -> . BLTIN ( expr )
+    (13) expr -> . asgn
+    (14) expr -> . VAR
+    (15) expr -> . NUMBER
+    (4) asgn -> . VAR = expr
+    -               shift and go to state 5
+    (               shift and go to state 6
+    BLTIN           shift and go to state 7
+    VAR             shift and go to state 9
+    NUMBER          shift and go to state 10
+
+    expr                           shift and go to state 23
+    asgn                           shift and go to state 8
+
+state 15
+
+    (11) expr -> expr + . expr
+    (5) expr -> . - expr
+    (6) expr -> . ( expr )
+    (7) expr -> . expr ^ expr
+    (8) expr -> . expr / expr
+    (9) expr -> . expr * expr
+    (10) expr -> . expr - expr
+    (11) expr -> . expr + expr
+    (12) expr -> . BLTIN ( expr )
+    (13) expr -> . asgn
+    (14) expr -> . VAR
+    (15) expr -> . NUMBER
+    (4) asgn -> . VAR = expr
+    -               shift and go to state 5
+    (               shift and go to state 6
+    BLTIN           shift and go to state 7
+    VAR             shift and go to state 9
+    NUMBER          shift and go to state 10
+
+    expr                           shift and go to state 24
+    asgn                           shift and go to state 8
+
+state 16
+
+    (5) expr -> - expr .
+    (7) expr -> expr . ^ expr
+    (8) expr -> expr . / expr
+    (9) expr -> expr . * expr
+    (10) expr -> expr . - expr
+    (11) expr -> expr . + expr
+    /               reduce using rule 5 (expr -> - expr .)
+    *               reduce using rule 5 (expr -> - expr .)
+    -               reduce using rule 5 (expr -> - expr .)
+    +               reduce using rule 5 (expr -> - expr .)
+    error           reduce using rule 5 (expr -> - expr .)
+    (               reduce using rule 5 (expr -> - expr .)
+    BLTIN           reduce using rule 5 (expr -> - expr .)
+    VAR             reduce using rule 5 (expr -> - expr .)
+    NUMBER          reduce using rule 5 (expr -> - expr .)
+    $end            reduce using rule 5 (expr -> - expr .)
+    )               reduce using rule 5 (expr -> - expr .)
+    ^               shift and go to state 11
+
+
+state 17
+
+    (6) expr -> ( expr . )
+    (7) expr -> expr . ^ expr
+    (8) expr -> expr . / expr
+    (9) expr -> expr . * expr
+    (10) expr -> expr . - expr
+    (11) expr -> expr . + expr
+    )               shift and go to state 25
+    ^               shift and go to state 11
+    /               shift and go to state 12
+    *               shift and go to state 13
+    -               shift and go to state 14
+    +               shift and go to state 15
+
+
+state 18
+
+    (12) expr -> BLTIN ( . expr )
+    (5) expr -> . - expr
+    (6) expr -> . ( expr )
+    (7) expr -> . expr ^ expr
+    (8) expr -> . expr / expr
+    (9) expr -> . expr * expr
+    (10) expr -> . expr - expr
+    (11) expr -> . expr + expr
+    (12) expr -> . BLTIN ( expr )
+    (13) expr -> . asgn
+    (14) expr -> . VAR
+    (15) expr -> . NUMBER
+    (4) asgn -> . VAR = expr
+    -               shift and go to state 5
+    (               shift and go to state 6
+    BLTIN           shift and go to state 7
+    VAR             shift and go to state 9
+    NUMBER          shift and go to state 10
+
+    expr                           shift and go to state 26
+    asgn                           shift and go to state 8
+
+state 19
+
+    (4) asgn -> VAR = . expr
+    (5) expr -> . - expr
+    (6) expr -> . ( expr )
+    (7) expr -> . expr ^ expr
+    (8) expr -> . expr / expr
+    (9) expr -> . expr * expr
+    (10) expr -> . expr - expr
+    (11) expr -> . expr + expr
+    (12) expr -> . BLTIN ( expr )
+    (13) expr -> . asgn
+    (14) expr -> . VAR
+    (15) expr -> . NUMBER
+    (4) asgn -> . VAR = expr
+    -               shift and go to state 5
+    (               shift and go to state 6
+    BLTIN           shift and go to state 7
+    VAR             shift and go to state 9
+    NUMBER          shift and go to state 10
+
+    expr                           shift and go to state 27
+    asgn                           shift and go to state 8
+
+state 20
+
+    (7) expr -> expr ^ expr .
+    (7) expr -> expr . ^ expr
+    (8) expr -> expr . / expr
+    (9) expr -> expr . * expr
+    (10) expr -> expr . - expr
+    (11) expr -> expr . + expr
+    /               reduce using rule 7 (expr -> expr ^ expr .)
+    *               reduce using rule 7 (expr -> expr ^ expr .)
+    -               reduce using rule 7 (expr -> expr ^ expr .)
+    +               reduce using rule 7 (expr -> expr ^ expr .)
+    error           reduce using rule 7 (expr -> expr ^ expr .)
+    (               reduce using rule 7 (expr -> expr ^ expr .)
+    BLTIN           reduce using rule 7 (expr -> expr ^ expr .)
+    VAR             reduce using rule 7 (expr -> expr ^ expr .)
+    NUMBER          reduce using rule 7 (expr -> expr ^ expr .)
+    $end            reduce using rule 7 (expr -> expr ^ expr .)
+    )               reduce using rule 7 (expr -> expr ^ expr .)
+    ^               shift and go to state 11
+
+
+state 21
+
+    (8) expr -> expr / expr .
+    (7) expr -> expr . ^ expr
+    (8) expr -> expr . / expr
+    (9) expr -> expr . * expr
+    (10) expr -> expr . - expr
+    (11) expr -> expr . + expr
+    /               reduce using rule 8 (expr -> expr / expr .)
+    *               reduce using rule 8 (expr -> expr / expr .)
+    -               reduce using rule 8 (expr -> expr / expr .)
+    +               reduce using rule 8 (expr -> expr / expr .)
+    error           reduce using rule 8 (expr -> expr / expr .)
+    (               reduce using rule 8 (expr -> expr / expr .)
+    BLTIN           reduce using rule 8 (expr -> expr / expr .)
+    VAR             reduce using rule 8 (expr -> expr / expr .)
+    NUMBER          reduce using rule 8 (expr -> expr / expr .)
+    $end            reduce using rule 8 (expr -> expr / expr .)
+    )               reduce using rule 8 (expr -> expr / expr .)
+    ^               shift and go to state 11
+
+
+state 22
+
+    (9) expr -> expr * expr .
+    (7) expr -> expr . ^ expr
+    (8) expr -> expr . / expr
+    (9) expr -> expr . * expr
+    (10) expr -> expr . - expr
+    (11) expr -> expr . + expr
+    /               reduce using rule 9 (expr -> expr * expr .)
+    *               reduce using rule 9 (expr -> expr * expr .)
+    -               reduce using rule 9 (expr -> expr * expr .)
+    +               reduce using rule 9 (expr -> expr * expr .)
+    error           reduce using rule 9 (expr -> expr * expr .)
+    (               reduce using rule 9 (expr -> expr * expr .)
+    BLTIN           reduce using rule 9 (expr -> expr * expr .)
+    VAR             reduce using rule 9 (expr -> expr * expr .)
+    NUMBER          reduce using rule 9 (expr -> expr * expr .)
+    $end            reduce using rule 9 (expr -> expr * expr .)
+    )               reduce using rule 9 (expr -> expr * expr .)
+    ^               shift and go to state 11
+
+
+state 23
+
+    (10) expr -> expr - expr .
+    (7) expr -> expr . ^ expr
+    (8) expr -> expr . / expr
+    (9) expr -> expr . * expr
+    (10) expr -> expr . - expr
+    (11) expr -> expr . + expr
+    -               reduce using rule 10 (expr -> expr - expr .)
+    +               reduce using rule 10 (expr -> expr - expr .)
+    error           reduce using rule 10 (expr -> expr - expr .)
+    (               reduce using rule 10 (expr -> expr - expr .)
+    BLTIN           reduce using rule 10 (expr -> expr - expr .)
+    VAR             reduce using rule 10 (expr -> expr - expr .)
+    NUMBER          reduce using rule 10 (expr -> expr - expr .)
+    $end            reduce using rule 10 (expr -> expr - expr .)
+    )               reduce using rule 10 (expr -> expr - expr .)
+    ^               shift and go to state 11
+    /               shift and go to state 12
+    *               shift and go to state 13
+
+
+state 24
+
+    (11) expr -> expr + expr .
+    (7) expr -> expr . ^ expr
+    (8) expr -> expr . / expr
+    (9) expr -> expr . * expr
+    (10) expr -> expr . - expr
+    (11) expr -> expr . + expr
+    -               reduce using rule 11 (expr -> expr + expr .)
+    +               reduce using rule 11 (expr -> expr + expr .)
+    error           reduce using rule 11 (expr -> expr + expr .)
+    (               reduce using rule 11 (expr -> expr + expr .)
+    BLTIN           reduce using rule 11 (expr -> expr + expr .)
+    VAR             reduce using rule 11 (expr -> expr + expr .)
+    NUMBER          reduce using rule 11 (expr -> expr + expr .)
+    $end            reduce using rule 11 (expr -> expr + expr .)
+    )               reduce using rule 11 (expr -> expr + expr .)
+    ^               shift and go to state 11
+    /               shift and go to state 12
+    *               shift and go to state 13
+
+
+state 25
+
+    (6) expr -> ( expr ) .
+    ^               reduce using rule 6 (expr -> ( expr ) .)
+    /               reduce using rule 6 (expr -> ( expr ) .)
+    *               reduce using rule 6 (expr -> ( expr ) .)
+    -               reduce using rule 6 (expr -> ( expr ) .)
+    +               reduce using rule 6 (expr -> ( expr ) .)
+    error           reduce using rule 6 (expr -> ( expr ) .)
+    (               reduce using rule 6 (expr -> ( expr ) .)
+    BLTIN           reduce using rule 6 (expr -> ( expr ) .)
+    VAR             reduce using rule 6 (expr -> ( expr ) .)
+    NUMBER          reduce using rule 6 (expr -> ( expr ) .)
+    $end            reduce using rule 6 (expr -> ( expr ) .)
+    )               reduce using rule 6 (expr -> ( expr ) .)
+
+
+state 26
+
+    (12) expr -> BLTIN ( expr . )
+    (7) expr -> expr . ^ expr
+    (8) expr -> expr . / expr
+    (9) expr -> expr . * expr
+    (10) expr -> expr . - expr
+    (11) expr -> expr . + expr
+    )               shift and go to state 28
+    ^               shift and go to state 11
+    /               shift and go to state 12
+    *               shift and go to state 13
+    -               shift and go to state 14
+    +               shift and go to state 15
+
+
+state 27
+
+    (4) asgn -> VAR = expr .
+    (7) expr -> expr . ^ expr
+    (8) expr -> expr . / expr
+    (9) expr -> expr . * expr
+    (10) expr -> expr . - expr
+    (11) expr -> expr . + expr
+    error           reduce using rule 4 (asgn -> VAR = expr .)
+    (               reduce using rule 4 (asgn -> VAR = expr .)
+    BLTIN           reduce using rule 4 (asgn -> VAR = expr .)
+    VAR             reduce using rule 4 (asgn -> VAR = expr .)
+    NUMBER          reduce using rule 4 (asgn -> VAR = expr .)
+    $end            reduce using rule 4 (asgn -> VAR = expr .)
+    )               reduce using rule 4 (asgn -> VAR = expr .)
+    ^               shift and go to state 11
+    /               shift and go to state 12
+    *               shift and go to state 13
+    -               shift and go to state 14
+    +               shift and go to state 15
+
+
+state 28
+
+    (12) expr -> BLTIN ( expr ) .
+    ^               reduce using rule 12 (expr -> BLTIN ( expr ) .)
+    /               reduce using rule 12 (expr -> BLTIN ( expr ) .)
+    *               reduce using rule 12 (expr -> BLTIN ( expr ) .)
+    -               reduce using rule 12 (expr -> BLTIN ( expr ) .)
+    +               reduce using rule 12 (expr -> BLTIN ( expr ) .)
+    error           reduce using rule 12 (expr -> BLTIN ( expr ) .)
+    (               reduce using rule 12 (expr -> BLTIN ( expr ) .)
+    BLTIN           reduce using rule 12 (expr -> BLTIN ( expr ) .)
+    VAR             reduce using rule 12 (expr -> BLTIN ( expr ) .)
+    NUMBER          reduce using rule 12 (expr -> BLTIN ( expr ) .)
+    $end            reduce using rule 12 (expr -> BLTIN ( expr ) .)
+    )               reduce using rule 12 (expr -> BLTIN ( expr ) .)
+
+
+Conflicts:
+
+shift/reduce conflict for - in state 4 resolved as shift
